@@ -8,7 +8,8 @@ let i = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 export default function Products() {
   const {products} = useProductContext();
   const {filter_products, upadteFilterValue, filters} = useFilterContext();
-  const {category} = filters;
+  
+  
 
   const getUniqueData = (data, property) => {
     let c = [];
@@ -36,7 +37,7 @@ export default function Products() {
           <div className="flex items-center justify-center gap-2 mt-6">
             {categoryData.map((cat) => (
               <Badge
-                variant="soft"
+                variant={cat.toLowerCase() == filters.category.toLowerCase() ?"solid":"soft"}
                 size="2"
                 className="transition-colors hover:bg-green-300"
               >

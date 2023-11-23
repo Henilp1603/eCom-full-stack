@@ -2,6 +2,7 @@ import React, {createContext, useContext, useEffect, useReducer} from "react";
 import axios from "axios";
 import filterReducer from "../Reducers/filterReducer";
 import {useProductContext} from "./ProductContext";
+import { useNavigate } from "react-router-dom";
 
 const FilterContext = createContext();
 
@@ -13,6 +14,8 @@ const FilterProvider = ({children}) => {
       category: "All",
     },
   };
+
+ 
   const [state, dispatch] = useReducer(filterReducer, initialState);
 
   useEffect(() => {
@@ -32,8 +35,17 @@ const FilterProvider = ({children}) => {
     return dispatch({type: "UPDATE_FILTER_VALUE", payload: {name, value}});
   };
 
+  const hendleCtegory=(c)=>{
+    let name='category'
+    let value=c
+
+    
+    return dispatch({type: "UPDATE_FILTER_VALUE", payload: {name, value}});
+
+  }
+
   return (
-    <FilterContext.Provider value={{...state, upadteFilterValue}}>
+    <FilterContext.Provider value={{...state, upadteFilterValue,hendleCtegory}}>
       {children}
     </FilterContext.Provider>
   );

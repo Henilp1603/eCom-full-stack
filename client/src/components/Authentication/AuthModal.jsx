@@ -28,8 +28,8 @@ export default function AuthModal({}) {
       const {data: res} = await axios.post(url, data);
 
       if (res && !res.err) {
-        clickRef.current.click();
-        navigate("/");
+      
+        navigate("/user-profile");
       }
     } catch (error) {
       console.log(error);
