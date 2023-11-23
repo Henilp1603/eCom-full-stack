@@ -39,8 +39,6 @@ export default function SingleProduct() {
     navigate("/cart");
   };
 
- 
-
   const API = `${import.meta.env.VITE_SERVER_API}/api/product/get-product/${id}`;
 
   const {isLoading, isError, data} = useQuery({
