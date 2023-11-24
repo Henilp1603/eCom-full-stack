@@ -7,10 +7,10 @@ import {cloudinaryUploadImg} from "../utils/Cloudinary.js";
 import fs from "fs";
 
 const createProduct = asyncHandler(async (req, res) => {
-  // console.log(req.body);
+  console.log(req.body);
   try {
     const slug = slugify(req.body.title);
-    console.log(slug);
+   
 
     const uploader = (path) => cloudinaryUploadImg(path, "images");
     const urls = [];
@@ -25,9 +25,15 @@ const createProduct = asyncHandler(async (req, res) => {
     const images = urls.map((file) => {
       return file;
     });
+    const colors=JSON.parse(req.body.colors)
+    
+    let c=[]
+    colors.map((item)=>{
+      return c.push(item)
+    })
 
     const colorAndImg = images.map((i, index) => {
-      return {color: req.body.colors[index], image: i};
+      return {color: c[index], image: i};
     });
 
     const disCouPri = JSON.parse(req.body.discountedPrice);

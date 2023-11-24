@@ -13,6 +13,7 @@ const createOrder = asyncHandler(async (req, res) => {
       const products=cart.map((item)=>{
         return {
           product:item.id,
+          productPrice:item.price,
           count:item.quantity
         }
       })
@@ -82,7 +83,7 @@ const deleteOrder = asyncHandler(async (req, res) => {
     const {id} = req.params;
    
     try {
-      const deleteOrder = await Order.findOneAndDelete(id);
+      const deleteOrder = await Order.findByIdAndDelete(id);
       res.json(deleteOrder);
     } catch (error) {
       throw new Error(error);

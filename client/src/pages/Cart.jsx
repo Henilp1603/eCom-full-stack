@@ -28,7 +28,7 @@ export default function Cart() {
       });
 
       if (res && !res.err) {
-        navigate("/checkout");
+        navigate("/checkout")
       }
     } catch (error) {
       console.log(error);

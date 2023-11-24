@@ -105,6 +105,13 @@ const cartReducer = (state, action) => {
         }
       );
       return {...state, total_item, total_price};
+    case "DELETE_CART":
+      return {
+        ...state,
+        cart:[],
+        total_item:"",
+        total_price:""
+      }  
 
     default:
       return state;

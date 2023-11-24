@@ -28,13 +28,19 @@ export default function AuthModal({}) {
       const {data: res} = await axios.post(url, data);
 
       if (res && !res.err) {
-      
+        const token = res.token;
+        const date = new Date();
+        date.setDate(date.getDate() + 30);
+
+        setCookie("token", token, {path: "/", expires: date});
         navigate("/user-profile");
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+
 
   const getData = async (e) => {
     e.preventDefault();

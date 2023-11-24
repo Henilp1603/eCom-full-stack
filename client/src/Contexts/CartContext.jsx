@@ -45,7 +45,7 @@ const CartProvider = ({children}) => {
     });
   };
 
-  const deleteCart = () => {
+  const clearCart = () => {
     dispatch({type: "DELETE_CART"});
   };
   const removeItem = (id) => {
@@ -68,7 +68,7 @@ const CartProvider = ({children}) => {
 
   return (
     <CartContext.Provider
-      value={{...state, addToCart, removeItem, incrementItem, decrementItem}}
+      value={{...state, addToCart, removeItem, incrementItem, decrementItem,clearCart}}
     >
       {children}
     </CartContext.Provider>

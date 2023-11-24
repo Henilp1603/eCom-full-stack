@@ -7,6 +7,7 @@ import generateToken from "../config/jwtToken.js";
 import {validateMongoDbId} from "../utils/validateMongoDbId.js";
 import sendEmail from "./emailCtrl.js";
 import crypto from "crypto"
+import { log } from "console";
 
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -26,7 +27,29 @@ const registerUser = asyncHandler(async (req, res) => {
       };
 
       const savedUser = await User.create(newUser1);
-      res.status(201).json(savedUser);
+      console.log(savedUser)
+      if (savedUser) {
+        const token=generateToken(savedUser?._id)
+        console.log(token);
+        const updateuser ={
+          _id: savedUser?._id,
+        name: savedUser?.name,
+        email: savedUser?.email,
+        token: token
+        }  
+        console.log(savedUser.id);
+        await User.findByIdAndUpdate(
+          savedUser.id,
+        {
+          token: token,
+        },
+        {new: true}
+        )
+
+        
+
+        res.status(201).json(updateuser)
+      }
     } catch (error) {
       res.status(500).json(error);
     }
@@ -42,15 +65,15 @@ const loginUser = asyncHandler(async (req, res) => {
   if (findUser) {
     const ismatch = await bcrypt.compare(password, findUser.password);
     if (ismatch) {
-      const refreshToken = await generateRefreshToken(findUser?._id);
+      const token = await generateToken(findUser?._id);
       const updateuser = await User.findByIdAndUpdate(
         findUser.id,
         {
-          refreshToken: refreshToken,
+          token: token,
         },
         {new: true}
       );
-      res.cookie("refreshToken", refreshToken, {
+      res.cookie("token", token, {
         httpOnly: true,
         maxAge: 72 * 60 * 60 * 1000,
       });
@@ -58,7 +81,7 @@ const loginUser = asyncHandler(async (req, res) => {
         _id: findUser?._id,
         name: findUser?.name,
         email: findUser?.email,
-        token: generateToken(findUser?._id),
+        token: token,
       });
     }
   } else {
@@ -93,6 +116,20 @@ const getUser = asyncHandler(async (req, res) => {
   }
 });
 
+const getUserbyToken= asyncHandler(async (req, res) => {
+  const {token} = req.params;
+  console.log(token);
+
+  try {
+    const getaUser = await User.find({token});
+    res.json(
+      getaUser
+    );
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 // Delete a user
 
 const deleteUser = asyncHandler(async (req, res) => {
@@ -101,9 +138,9 @@ const deleteUser = asyncHandler(async (req, res) => {
 
   try {
     const deleteaUser = await User.findByIdAndDelete(id);
-    res.json({
-      deleteaUser,
-    });
+    res.json(
+      deleteaUser
+    );
   } catch (error) {
     throw new Error(error);
   }
@@ -114,6 +151,28 @@ const deleteUser = asyncHandler(async (req, res) => {
 const updatedUser = asyncHandler(async (req, res) => {
   const {_id} = req.user;
   // validateMongoDbId(_id);
+  const findUser = await User.findOne({_id});
+  if (req.body.name === "") {
+    req.body.name=findUser.name 
+  }
+  if (req.body.phoneNo === "") {
+    req.body.phoneNo=findUser.phoneNo 
+  }
+  if (req.body.address === "") {
+    req.body.address=findUser.address 
+  }
+
+  if (req.body.pincode === "") {
+    req.body.address=findUser.pincode 
+  }
+
+  if(req.body.password === ""){
+    req.body.password=findUser.password
+  }else{
+    const salt = await bcrypt.genSalt(12);
+    req.body.password = await bcrypt.hash(req.body.password, salt);
+  }
+    
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
@@ -121,7 +180,11 @@ const updatedUser = asyncHandler(async (req, res) => {
       {
         name: req?.body?.name,
         email: req?.body?.email,
+        password:req?.body?.password,
         cart: req?.body?.cart,
+        pincode:req?.body?.pincode,
+        phoneNo:req?.body?.phoneNo,
+        address:req?.body?.address
       },
       {
         new: true,
@@ -270,6 +333,7 @@ export {
   registerUser,
   loginUser,
   getallUser,
+  getUserbyToken,
   getUser,
   deleteUser,
   updatedUser,

@@ -8,6 +8,7 @@ const initialState = {
   name: "",
   email: "",
   password: "",
+  
 };
 const AuthProvider = ({children}) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
@@ -18,8 +19,12 @@ const AuthProvider = ({children}) => {
     return dispatch({type: "CHANGE_DATA", payload: {name, value}});
   };
 
+ 
+
+  
+
   return (
-    <AuthContext.Provider value={{...state, changeData}}>
+    <AuthContext.Provider value={{...state, changeData,}}>
       {children}
     </AuthContext.Provider>
   );

@@ -7,12 +7,15 @@ const userSchema = new Schema(
   {
     name: {type: String, required: true},
     email: {type: String, required: true,unique:true},
+    phoneNo:{type:String},
+    pincode:{type:String},
     password: {type: String, required: true},
     role: {type: String, default: "customer"},
     address:{type:String},
     cart: {type: Array, default: []},
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     refreshToken: {type: String},
+    token:{type:String}
   },
   {timestamps: true}
 );
